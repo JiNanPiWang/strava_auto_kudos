@@ -48,20 +48,40 @@ class AutoKudos:
             exit(1)
         return email, password
 
-    def login(self):
+    def login(self, max_attempts=3, retry_interval=10):
+        attempts = 0
+        while attempts < max_attempts:
+            if self.try_to_login():
+                return True
+            else:
+                print("Login attempt %d failed. Retrying in %d seconds." % (attempts + 1, retry_interval))
+                time.sleep(retry_interval)
+                attempts += 1
+
+        print("Max login attempts reached. Exiting.")
+        return False
+
+    def try_to_login(self):
         email, password = self.get_account()
         # 登录
-        # 找到并填写email字段
         email_field = self.driver.find_element(By.ID, 'email')
         email_field.send_keys(email)
 
-        # 找到并填写password字段
         password_field = self.driver.find_element(By.ID, 'password')
         password_field.send_keys(password)
 
-        # 找到并点击登录按钮
         login_button = self.driver.find_element(By.ID, 'login-button')
         login_button.click()
+
+        # 等待登录成功后页面的元素出现（一个class为feed-ui的元素）
+        try:
+            welcome_message = WebDriverWait(self.driver, 60).until(
+                EC.presence_of_element_located((By.CLASS_NAME, 'feed-ui'))
+            )
+            print("Login successfully in %s" % datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+            return True
+        except TimeoutError:
+            return False
 
     def run(self):
         self.driver.get(self.url)
