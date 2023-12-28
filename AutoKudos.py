@@ -27,7 +27,16 @@ class AutoKudos:
             edge_options.add_argument("--mute-audio")
             self.driver = webdriver.Edge(options=edge_options)
 
-        self._wait = WebDriverWait(self.driver, 10)
+        self.wait = WebDriverWait(self.driver, 10)
+
+    def max_screen(self):
+        # 窗口最大化
+        self.driver.maximize_window()
+        # 设置窗口大小
+        # self.driver.set_window_size(1300, 800)
+        # print('调整前尺寸:', self.driver.get_window_size())
 
     def run(self):
         self.driver.get(self.url)
+        self.max_screen()
+        time.sleep(1000)
