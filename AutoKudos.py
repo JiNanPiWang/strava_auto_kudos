@@ -1,3 +1,4 @@
+import json
 import time
 import platform
 from datetime import datetime
@@ -36,7 +37,34 @@ class AutoKudos:
         # self.driver.set_window_size(1300, 800)
         # print('调整前尺寸:', self.driver.get_window_size())
 
+    def get_account(self):
+        try:
+            with open('credentials.json') as f:
+                data = json.load(f)
+                email = data['email']
+                password = data['password']
+        except FileNotFoundError:
+            print('Please create credentials.json file with your email and password.')
+            exit(1)
+        return email, password
+
+    def login(self):
+        email, password = self.get_account()
+        # 登录
+        # 找到并填写email字段
+        email_field = self.driver.find_element(By.ID, 'email')
+        email_field.send_keys(email)
+
+        # 找到并填写password字段
+        password_field = self.driver.find_element(By.ID, 'password')
+        password_field.send_keys(password)
+
+        # 找到并点击登录按钮
+        login_button = self.driver.find_element(By.ID, 'login-button')
+        login_button.click()
+
     def run(self):
         self.driver.get(self.url)
         self.max_screen()
+        self.login()
         time.sleep(1000)
