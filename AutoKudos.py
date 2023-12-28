@@ -75,16 +75,41 @@ class AutoKudos:
 
         # 等待登录成功后页面的元素出现（一个class为feed-ui的元素）
         try:
-            welcome_message = WebDriverWait(self.driver, 60).until(
+            WebDriverWait(self.driver, 60).until(
                 EC.presence_of_element_located((By.CLASS_NAME, 'feed-ui'))
             )
             print("Login successfully in %s" % datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             return True
         except TimeoutError:
+            print("Login timeout in %s" % datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             return False
+
+    def scroll_to_bottom(self):
+        while True:
+            # 滚动到页面底部
+            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+            # 等待一段时间，让页面加载
+            time.sleep(2)
+
+            # 检查页面是否在刷新
+            if not self.is_page_refreshing():
+                break
+
+            # 检查是否出现了特定class，表示没有更多内容了
+            if not self.is_page_refreshing():
+                print("Reached the end of the feed. Exiting scroll.")
+                self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                break
+
+    def is_page_refreshing(self):
+        # 通过检查页面的加载状态来确定是否在刷新
+        return self.driver.execute_script("return document.readyState") == "complete"
 
     def run(self):
         self.driver.get(self.url)
         self.max_screen()
         self.login()
+        # 在登录成功后，开始滚动页面
+        self.scroll_to_bottom()
         time.sleep(1000)
