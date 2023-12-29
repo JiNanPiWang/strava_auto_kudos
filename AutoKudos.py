@@ -85,7 +85,16 @@ class AutoKudos:
             return False
 
     def scroll_to_bottom(self):
+        print_interval = 60  # 设置输出间隔为60秒
+        print_counter = 60
+
         while True:
+            # 计数器递增
+            print_counter += 2  # 假设每次迭代耗时2秒
+            if print_counter >= print_interval:
+                print("Scroll to page bottom in %s" % datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+                print_counter = 0  # 重置计数器
+
             # 滚动到页面底部
             self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
@@ -97,8 +106,8 @@ class AutoKudos:
                 break
 
             # 检查是否出现了特定class，表示没有更多内容了
-            if not self.is_page_refreshing():
-                print("Reached the end of the feed. Exiting scroll.")
+            if self.is_no_entries_class_present():
+                print("Reached the end of the page in %s" % datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
                 self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
                 break
 
@@ -106,10 +115,24 @@ class AutoKudos:
         # 通过检查页面的加载状态来确定是否在刷新
         return self.driver.execute_script("return document.readyState") == "complete"
 
+    def is_no_entries_class_present(self):
+        # 检查是否存在特定class，表示没有更多内容了
+        try:
+            self.driver.find_element(By.CLASS_NAME, '------packages-feed-ui-src-Feed__no-entries--EiZWe')
+            return True
+        except selenium.common.exceptions.NoSuchElementException:
+            return False
+
+    def scroll_to_top(self):
+        # 滚动到页面顶部
+        print("Scroll to page top in %s" % datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        self.driver.execute_script("window.scrollTo(0, 0);")
+
     def run(self):
         self.driver.get(self.url)
         self.max_screen()
         self.login()
         # 在登录成功后，开始滚动页面
         self.scroll_to_bottom()
+        self.scroll_to_top()
         time.sleep(1000)
