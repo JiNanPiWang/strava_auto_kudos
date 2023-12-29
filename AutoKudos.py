@@ -8,6 +8,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
+from selenium.common.exceptions import TimeoutException
 
 
 class AutoKudos:
@@ -129,7 +130,6 @@ class AutoKudos:
         print("Scroll to page top in %s" % datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         self.driver.execute_script("window.scrollTo(0, 0);")
 
-    # TODO：别点自己的赞
     # TODO：增加点击时的信息，比如点了谁的赞
     def kudos_all(self):
         # 获取所有指定class的元素
@@ -137,7 +137,21 @@ class AutoKudos:
         # 逐个点击每个元素中的button
         for button in entry_containers:
             button.click()
-            print("成功点击了一个按钮")
+
+            try:
+                # 等待弹窗出现（可根据实际情况调整等待时间）
+                x = WebDriverWait(self.driver, 2).until(
+                    EC.presence_of_element_located(
+                        (By.CLASS_NAME, '------packages-ui-Modal-Modal-module__closeButton--fjdqh'))
+                )
+                # 获取弹窗中的关闭按钮并点击
+                close_button = self.driver.find_element(By.CLASS_NAME,
+                                                        '------packages-ui-Modal-Modal-module__closeButton--fjdqh')
+                close_button.click()
+
+            except TimeoutException:
+                # 弹窗未出现，继续执行下一个按钮的点击操作
+                print("Successfully giving a kudos in %s!" % datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
     def get_athlete_name(self):
         try:
