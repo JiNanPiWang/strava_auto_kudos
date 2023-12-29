@@ -128,6 +128,16 @@ class AutoKudos:
         print("Scroll to page top in %s" % datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         self.driver.execute_script("window.scrollTo(0, 0);")
 
+    # TODO：别点自己的赞
+    # TODO：增加点击时的信息，比如点了谁的赞
+    def kudos_all(self):
+        # 获取所有指定class的元素
+        entry_containers = self.driver.find_elements(By.CSS_SELECTOR, '[data-testid="kudos_button"]')
+        # 逐个点击每个元素中的button
+        for button in entry_containers:
+            button.click()
+            print("成功点击了一个按钮")
+
     def run(self):
         self.driver.get(self.url)
         self.max_screen()
@@ -135,4 +145,5 @@ class AutoKudos:
         # 在登录成功后，开始滚动页面
         self.scroll_to_bottom()
         self.scroll_to_top()
+        self.kudos_all()
         time.sleep(1000)
