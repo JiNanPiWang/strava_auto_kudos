@@ -2,6 +2,7 @@ import json
 import time
 import platform
 from datetime import datetime
+import pdb
 
 import selenium.common.exceptions
 from selenium import webdriver
@@ -29,8 +30,6 @@ class AutoKudos:
         else:
             edge_options.add_argument("--mute-audio")
             self.driver = webdriver.Edge(options=edge_options)
-
-        self.wait = WebDriverWait(self.driver, 10)
 
     def max_screen(self):
         # 窗口最大化
@@ -140,7 +139,7 @@ class AutoKudos:
 
             try:
                 # 等待弹窗出现（可根据实际情况调整等待时间）
-                x = WebDriverWait(self.driver, 2).until(
+                WebDriverWait(self.driver, 2).until(
                     EC.presence_of_element_located(
                         (By.CLASS_NAME, '------packages-ui-Modal-Modal-module__closeButton--fjdqh'))
                 )
@@ -166,6 +165,7 @@ class AutoKudos:
             return None
 
     def run(self):
+        print("Start running program in %s!" % datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         self.driver.get(self.url)
         self.max_screen()
         self.login()
@@ -174,4 +174,5 @@ class AutoKudos:
         self.scroll_to_bottom()
         self.scroll_to_top()
         self.kudos_all()
-        time.sleep(1000)
+        print("All kudos are given! Program over in %s!" % datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        time.sleep(60)
