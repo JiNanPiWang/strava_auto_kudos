@@ -12,6 +12,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 class AutoKudos:
     def __init__(self, url):
+        self.athlete_name = None
         self.url = url
         self.os_type = platform.system()
         self.current_window_handle = None
@@ -138,11 +139,24 @@ class AutoKudos:
             button.click()
             print("成功点击了一个按钮")
 
+    def get_athlete_name(self):
+        try:
+            # 使用XPath定位<h2>元素
+            h2_element = self.driver.find_element(By.XPATH, '//h2[@data-testid="dashboard-athlete-name"]')
+            # 获取元素的文本内容
+            athlete_name = h2_element.text
+            return athlete_name
+
+        except Exception as e:
+            print("athlete name not found, error: %s" % e)
+            return None
+
     def run(self):
         self.driver.get(self.url)
         self.max_screen()
         self.login()
         # 在登录成功后，开始滚动页面
+        self.athlete_name = self.get_athlete_name()
         self.scroll_to_bottom()
         self.scroll_to_top()
         self.kudos_all()
