@@ -96,6 +96,12 @@ class AutoKudos:
             if print_counter >= print_interval:
                 print("Scroll to page bottom in %s" % datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
                 print_counter = 0  # 重置计数器
+
+            # 可能有时候要往上翻一点，才能刷新
+            if print_counter % 10 == 0:
+                self.scroll_to_top()
+                time.sleep(1)
+
             # 滚动到页面底部
             self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 

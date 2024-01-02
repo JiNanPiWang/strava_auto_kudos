@@ -21,7 +21,8 @@ if __name__ == '__main__':
         run_auto_kudos()
     else:
         # 设置定时任务，每半个小时执行一次
-        schedule.every(30).minutes.do(run_auto_kudos)
+        print("Program run every 20 minutes")
+        schedule.every(20).minutes.do(run_auto_kudos)
         while True:
             # 运行定时任务
             schedule.run_pending()
