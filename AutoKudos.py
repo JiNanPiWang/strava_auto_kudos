@@ -88,19 +88,17 @@ class AutoKudos:
     # TODO：可能有时候要往上翻一点，才能刷新
     def scroll_to_bottom(self):
         print_interval = 60  # 设置输出间隔为60秒
-        print_counter = 60
+        print_counter = -2
 
         while True:
             # 计数器递增
             print_counter += 2  # 假设每次迭代耗时2秒
             if print_counter >= print_interval:
                 print("Scroll to page bottom in %s" % datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-                print_counter = 0  # 重置计数器
 
-            # 可能有时候要往上翻一点，才能刷新
-            if print_counter % 10 == 0:
-                self.scroll_to_top()
-                time.sleep(1)
+            if print_counter == 120:
+                print("Scroll for 120 seconds, stop scrolling now.")
+                break
 
             # 滚动到页面底部
             self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
