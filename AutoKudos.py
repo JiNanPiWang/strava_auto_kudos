@@ -93,11 +93,11 @@ class AutoKudos:
         while True:
             # 计数器递增
             print_counter += 2  # 假设每次迭代耗时2秒
-            if print_counter >= print_interval:
+            if print_counter % print_interval == 0:
                 print("Scroll to page bottom in %s" % datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
-            if print_counter == 120:
-                print("Scroll for 120 seconds, stop scrolling now.")
+            if print_counter == 240:
+                print("Scroll for 240 seconds, stop scrolling now.")
                 break
 
             # 滚动到页面底部
