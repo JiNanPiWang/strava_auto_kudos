@@ -2,6 +2,6 @@
 while true
 do
         python3 main.py --run-once
-        sleep 600  # 20分钟等于1200秒
+        sleep 240  # 4分钟等于240秒
 done
 
